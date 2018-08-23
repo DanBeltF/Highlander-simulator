@@ -26,11 +26,7 @@ public class ControlFrame extends JFrame {
 
     private static final int DEFAULT_IMMORTAL_HEALTH = 100;
     private static final int DEFAULT_DAMAGE_VALUE = 10;
-    
-    private String waiting = Thread.State.WAITING.toString();
-    
-    public static Object obj = new Object();
-    
+
     private JPanel contentPane;
 
     private List<Immortal> immortals;
@@ -39,8 +35,6 @@ public class ControlFrame extends JFrame {
     private JLabel statisticsLabel;
     private JScrollPane scrollPane;
     private JTextField numOfImmortals;
-    
-    public static boolean acabar = false;
 
     /**
      * Launch the application.
@@ -94,24 +88,14 @@ public class ControlFrame extends JFrame {
         btnPauseAndCheck.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
 
-                //int sum = 0;
-                //for (Immortal im : immortals) {
-                    //sum += im.getHealth();
-                //}
-                for(Immortal im: immortals){
-                    im.pause();
-                }int n = 0;
-                while(n<immortals.size()){
-                    if(immortals.get(n).getState().toString().equals(waiting)){
-                        n++;
-                    }
-                }
-                
-                AtomicInteger sum = new AtomicInteger(0);
+                /*
+				 * COMPLETAR
+                 */
+                int sum = 0;
                 for (Immortal im : immortals) {
-                    sum.addAndGet(im.getHealth().get());
+                    sum += im.getHealth();
                 }
-                
+
                 statisticsLabel.setText("<html>"+immortals.toString()+"<br>Health sum:"+ sum);
                 
                 
