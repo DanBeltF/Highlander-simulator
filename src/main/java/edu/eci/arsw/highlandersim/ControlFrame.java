@@ -20,6 +20,9 @@ import java.awt.event.ActionEvent;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 import java.awt.Color;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JScrollBar;
 
 public class ControlFrame extends JFrame {
@@ -87,19 +90,20 @@ public class ControlFrame extends JFrame {
         JButton btnPauseAndCheck = new JButton("Pause and check");
         btnPauseAndCheck.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
+                try{
+                    int sum = 0;
+                    for (Immortal im : immortals) {
+                        im.pause();
+                    }
+                    for (Immortal im : immortals) {
+                        sum += im.getHealth();
+                    }
 
-                /*
-				 * COMPLETAR
-                 */
-                int sum = 0;
-                for (Immortal im : immortals) {
-                    sum += im.getHealth();
+                    statisticsLabel.setText("<html>"+immortals.toString()+"<br>Health sum:"+ sum);
                 }
-
-                statisticsLabel.setText("<html>"+immortals.toString()+"<br>Health sum:"+ sum);
-                
-                
-
+                catch (InterruptedException ex) {
+                        Logger.getLogger(ControlFrame.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         });
         toolBar.add(btnPauseAndCheck);
@@ -108,12 +112,13 @@ public class ControlFrame extends JFrame {
 
         btnResume.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                /**
-                 * IMPLEMENTAR
-                 */
-
+               for (Immortal im : immortals) {
+                        im.resumir();
+                    }
             }
         });
+        
+        
 
         toolBar.add(btnResume);
 
@@ -127,7 +132,15 @@ public class ControlFrame extends JFrame {
 
         JButton btnStop = new JButton("STOP");
         btnStop.setForeground(Color.RED);
-        toolBar.add(btnStop);
+        btnStop.addActionListener(new ActionListener(){
+            public void actionPerformed(ActionEvent e) {
+                for (Immortal im : immortals) {
+                    im.parar();
+                }
+                btnStart.setEnabled(true);
+            }        
+        });
+        toolBar.add(btnStop);	
 
         scrollPane = new JScrollPane();
         contentPane.add(scrollPane, BorderLayout.CENTER);
@@ -149,7 +162,7 @@ public class ControlFrame extends JFrame {
         try {
             int ni = Integer.parseInt(numOfImmortals.getText());
 
-            List<Immortal> il = new LinkedList<Immortal>();
+            List<Immortal> il = new CopyOnWriteArrayList<>();
 
             for (int i = 0; i < ni; i++) {
                 Immortal i1 = new Immortal("im" + i, il, DEFAULT_IMMORTAL_HEALTH, DEFAULT_DAMAGE_VALUE,ucb);
